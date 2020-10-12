@@ -21,35 +21,37 @@ parseVar = do
 
 parseParent :: ReadP Term
 parseParent = do
-  string "("
+  _ <- string "("
   t <- parseTerm
-  string ")"
+  _ <- string ")"
   return t
 
 parseAbs :: ReadP Term
 parseAbs = do
   string "λ"
-  name <- fmap show parseVarName
+  -- name <- fmap show parseVarName
   string "."
   t <- parseTerm
-  return (TmAbs dci name t)
+  return (TmAbs dci "todo_gib_names" t)
 
-parseApp :: ReadP Term
+parseApp :: ReadP (Maybe Term)
 parseApp = do
-  t1 <- parseTerm
-  string " "
-  t2 <- parseTerm
-  return (TmApp dci t1 t2)
+  pure Nothing <|> smh where
+  smh = do
+    string " "
+    t2 <- parseTerm
+    return (Just t2) -- (TmApp dci t1 t2)
 
 parseTerm :: ReadP Term
 parseTerm = do
-  t <- parseVar <|> parseAbs <|> parseApp
-  return t
+  t <- parseVar <|> parseAbs <|> parseParent
+  app <- parseApp
+  case app of
+    Nothing -> return t
+    Just t2 -> return (TmApp dci t t2)
   
 parseProgram :: ReadP Term
-parseProgram = do
-  p <- parseTerm
-  return p
+parseProgram = do parseTerm
 
 readProgram :: String -> Term
 readProgram s = fst (head (readP_to_S parseProgram s))
