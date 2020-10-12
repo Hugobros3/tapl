@@ -1,0 +1,48 @@
+name:                tapl
+version:             0.1.0.0
+github:              "Hugobros3/tapl"
+license:             BSD3
+author:              "Hugo Devillers"
+maintainer:          "devillers@cg.uni-saarland.de"
+copyright:           ""
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Haskell implementation of exercices in the TAPL book
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  untyped:
+    main:                Untyped.hs
+    source-dirs:         untyped
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - tapl
+
+tests:
+  tapl-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - tapl
