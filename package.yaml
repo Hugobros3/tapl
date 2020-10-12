@@ -27,7 +27,7 @@ library:
 
 executables:
   untyped:
-    main:                Untyped.hs
+    main:                Main.hs
     source-dirs:         untyped
     ghc-options:
     - -threaded

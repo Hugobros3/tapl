@@ -1,6 +1,8 @@
 module UntypedParse where
 
 import Untyped
+
+import Control.Applicative
 import Text.ParserCombinators.ReadP
 import Data.Char (isDigit)
 
@@ -41,4 +43,13 @@ parseApp = do
 
 parseTerm :: ReadP Term
 parseTerm = do
-  return undefined
+  t <- parseVar <|> parseAbs <|> parseApp
+  return t
+  
+parseProgram :: ReadP Term
+parseProgram = do
+  p <- parseTerm
+  return p
+
+readProgram :: String -> Term
+readProgram s = fst (head (readP_to_S parseProgram s))

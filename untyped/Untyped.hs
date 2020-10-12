@@ -1,5 +1,4 @@
-module Main where
-import GHC.IO.Encoding
+module Untyped where
 
 type VarName = Int
 
@@ -38,13 +37,3 @@ showPrettyNames t = helper t [] where
    helper (TmApp _ t1 t2) ov = "(" ++ helper t1 ov ++ " " ++ helper t2 ov ++ ")"
 
 dci = MkInfo 0 0
-test = TmAbs dci "x" (TmVar dci 0 1)
-
-main :: IO ()
-main = do
- setLocaleEncoding utf8
- let p = test
- putStrLn "Hi"
- putStrLn "World"
- print p
- putStrLn (showPrettyNames p)
