@@ -1,5 +1,9 @@
 module Untyped where
 
+import Data.Data (Typeable)
+import Control.Exception.Base (Exception, throw, catch, try)
+
+
 type VarName = Int
 
 data Info = MkInfo Int Int
@@ -8,6 +12,9 @@ data Term
   = TmVar Info VarName Int
   | TmAbs Info String Term
   | TmApp Info Term Term
+
+type Context = [(String, Binding)]
+type Binding = VarName
 
 shift :: Int -> Term -> Term
 shift d = shiftH d 0
@@ -23,6 +30,35 @@ substitute v r = helper 0 where
     helper c (TmVar i n ck) = if n == v + c then shift c r else TmVar i n ck
     helper c (TmAbs i n tt) = TmAbs i n (helper (c+1) tt)
     helper c (TmApp i t1 t2) = TmApp i (helper c t1) (helper c t2)
+
+termSubsTop :: Term -> Term -> Term
+termSubsTop s t = shift (-1) (substitute 0 (shift 1 s) t)
+
+isVal :: Term -> Bool
+isVal (TmAbs _ _ _) = True
+isVal _ = False
+
+data Stuck = ImStuck deriving (Show, Typeable)
+instance Exception Stuck
+
+eval1 :: Context -> Term -> IO Term
+eval1 ctx t = do
+  case t of
+    (TmApp _ (TmAbs _ _ t12) v2 ) | isVal v2 -> return (termSubsTop v2 t12)
+    (TmApp i v1 t2) | isVal v1 -> do
+      t2_ <- eval1 ctx t2
+      return (TmApp i v1 t2_)
+    (TmApp i t1 t2) -> do
+      t1_ <- eval1 ctx t1
+      return (TmApp i t1_ t2)
+    _ -> throw ImStuck  
+
+eval :: Context -> Term -> IO Term
+eval ctx t = do
+  t_ <- try (eval1 ctx t) :: IO (Either Stuck Term)
+  case t_ of
+    Left _ -> return t
+    Right t_n -> eval ctx t_n
 
 instance Show Term where
   show (TmVar _ n _) = show n

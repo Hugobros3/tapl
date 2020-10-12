@@ -54,4 +54,4 @@ parseProgram :: ReadP Term
 parseProgram = do parseTerm
 
 readProgram :: String -> Term
-readProgram s = fst (head (readP_to_S parseProgram s))
+readProgram s = fst (last (readP_to_S parseProgram s))
