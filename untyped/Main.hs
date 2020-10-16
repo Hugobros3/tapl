@@ -5,20 +5,14 @@ import UntypedParse
 
 import GHC.IO.Encoding
 
-test = TmAbs dci "x" (TmVar dci 0 1)
-
-parserTest = "λ.λ.(0 1)"
-
-evalTest = "(λ.(0)) (λ.(λ.(1 0)))"
-
 main :: IO ()
 main = do
+  let test = TmAbs dontCareInfo "x" (TmVar dontCareInfo 0 1)
+  let parserTest = "λ.λ.(0 1)"
+  let evalTest = "(λ.(0)) (λ.(λ.(1 0)))"
+
   setLocaleEncoding utf8
   let p = readProgram evalTest
   print p
-  ep <- (eval1 [] p)
+  let ep = eval1 [] p
   print ep
-  --putStrLn "Hi"
-  --putStrLn "World"
-  --print p
-  --putStrLn (showPrettyNames p)
