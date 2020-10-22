@@ -5,16 +5,16 @@ import Data.Data (Typeable)
 
 type VarName = Int
 
-data Info = MkInfo Int Int
+data FileInfo = MkInfo Int Int
 
 data Term
-  = TmVar Info VarName Int
-  | TmAbs Info String Term
-  | TmApp Info Term Term
+  = TmVar FileInfo VarName Int
+  | TmAbs FileInfo String Term
+  | TmApp FileInfo Term Term
 
 type Context = [(String, Binding)]
 
-type Binding = VarName
+data Binding = NameBind
 
 shift :: Int -> Term -> Term
 shift d = shiftH d 0
@@ -74,5 +74,5 @@ showPrettyNames t = helper t []
     helper (TmAbs _ ogname t1) ov = "λ" ++ ogname ++ "." ++ helper t1 (ov ++ [ogname])
     helper (TmApp _ t1 t2) ov = "(" ++ helper t1 ov ++ " " ++ helper t2 ov ++ ")"
 
-dontCareInfo :: Info
+dontCareInfo :: FileInfo
 dontCareInfo = MkInfo 0 0

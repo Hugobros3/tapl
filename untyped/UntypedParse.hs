@@ -17,7 +17,7 @@ parseVarName = do fmap read (many1 digit)
 parseVar :: ReadP Term
 parseVar = do
   n <- parseVarName
-  return (TmVar dont_care_info n 0)
+  return (TmVar dontCareInfo n 0)
 
 parseParent :: ReadP Term
 parseParent = do
@@ -32,7 +32,7 @@ parseAbs = do
   -- name <- fmap show parseVarName
   string "."
   t <- parseTerm
-  return (TmAbs dont_care_info "todo_gib_names" t)
+  return (TmAbs dontCareInfo "todo_gib_names" t)
 
 parseApp :: ReadP (Maybe Term)
 parseApp = do
@@ -48,7 +48,7 @@ parseTerm = do
   app <- parseApp
   case app of
     Nothing -> return t
-    Just t2 -> return (TmApp dont_care_info t t2)
+    Just t2 -> return (TmApp dontCareInfo t t2)
 
 parseProgram :: ReadP Term
 parseProgram = do parseTerm

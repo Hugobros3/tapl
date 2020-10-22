@@ -6,9 +6,8 @@ author:              "Hugo Devillers"
 maintainer:          "devillers@cg.uni-saarland.de"
 copyright:           ""
 
-extra-source-files:
-- README.md
-- ChangeLog.md
+# extra-source-files:
+# - README.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -29,6 +28,15 @@ executables:
   untyped:
     main:                Main.hs
     source-dirs:         untyped
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - tapl
+  simple:
+    main:                Main.hs
+    source-dirs:         simple
     ghc-options:
     - -threaded
     - -rtsopts
